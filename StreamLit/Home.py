@@ -136,10 +136,10 @@ x_axis_area = st.selectbox("X-Axis", df.columns,key="x_axis_area")
 y_axis_area = st.selectbox("Y-Axis", df.columns,key="y_axis_area")
 st.area_chart(data=df, x=x_axis_area, y=y_axis_area, width=0, height=0, use_container_width=True)
     
-hide_streamlit_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            </style>
-            """
-st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
+# hide_streamlit_style = """
+#             <style>
+#             #MainMenu {visibility: hidden;}
+#             footer {visibility: hidden;}
+#             </style>
+#             """
+# st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
