@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Camera as ExpoCamera } from 'expo-camera';
 
 const CameraScreen = () => {
@@ -18,10 +18,36 @@ const CameraScreen = () => {
     if (cameraRef.current) {
       try {
         const { uri } = await cameraRef.current.takePictureAsync();
-        // Do something with the captured image URI, like saving it or displaying it.
-        console.log('Picture taken:', uri);
+
+        // Send the image URI to the Flask API for processing
+        const formData = new FormData();
+        formData.append('image', {
+          uri,
+          type: 'image/jpeg', // Change this to the appropriate image type if needed
+          name: 'image.jpg',
+        });
+
+        fetch('http://192.160.161.157:5000/compute', {
+          method: 'POST',
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Handle the response received from the server
+            if (data.message) {
+              Alert.alert('Computation Result', data.message);
+              console.log(data.message);
+            } else {
+              Alert.alert('Error', 'Error occurred during computation.');
+            }
+          })
+          .catch((error) => {
+            console.log('Error sending image:', error);
+            Alert.alert('Error', 'Error occurred during image processing.');
+          });
       } catch (error) {
         console.log('Error taking picture:', error);
+        Alert.alert('Error', 'Error occurred while taking a picture.');
       }
     }
   };

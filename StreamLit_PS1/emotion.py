@@ -12,8 +12,8 @@ st.set_page_config(
 )
 # Load the pre-trained emotion recognition model (VGG-Face)
 emotion_model_path = "best_model.h5"  # Replace this with the actual path
-emotion_model = tf.keras.models.load_model(emotion_model_path)
-
+emotion_model = tf.keras.models.load_model(emotion_model_path,compile=False)
+emotion_model.compile()
 # Define the emotion mapping
 emotion_mapping = {
     0: "angry",

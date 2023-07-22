@@ -1,3 +1,11 @@
+tensorboard==2.13.0
+tensorboard-data-server==0.7.1
+tensorflow==2.13.0
+tensorflow-estimator==2.13.0
+tensorflow-hub==0.12.0
+tensorflow-intel==2.13.0
+tensorflow-io-gcs-filesystem==0.31.0
+tensorflowjs==3.18.0
+wolframalpha==5.0.0
 Flask==2.1.1
 Flask-Cors==3.0.10
-Flask-Mail==0.9.1
