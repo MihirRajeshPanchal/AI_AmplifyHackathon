@@ -30,13 +30,6 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.widgetText}>{(data.percentage * 100).toFixed(1)}%</Text>
         </TouchableOpacity>
       ))}
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('CameraScreen')}
-      >
-        <Text style={styles.buttonText}>Start Surfing</Text>
-      </TouchableOpacity>
     </View>
   );
 };

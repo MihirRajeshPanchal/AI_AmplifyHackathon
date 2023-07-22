@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import json 
 from Cloud_Backend.dynamodb import upload_dynamodb_details
+import requests
+
 st.set_page_config(
     page_title="Surf",
     page_icon="assets/logo.jpeg",
@@ -32,9 +34,6 @@ def update_sidebar_values_from_json(json_content):
 
     if "State" in json_content:
         st.sidebar.selectbox("State", df["State"].unique(), index=df["State"].unique().tolist().index(json_content["State"]))
-
-    if "Postal Code" in json_content:
-        st.sidebar.selectbox("Postal Code", df["Postal Code"].unique(), index=df["Postal Code"].unique().tolist().index(json_content["Postal Code"]))
 
     if "Region" in json_content:
         st.sidebar.selectbox("Region", df["Region"].unique(), index=df["Region"].unique().tolist().index(json_content["Region"]))
@@ -74,7 +73,6 @@ if flag == 0:
     country = st.sidebar.selectbox("Country", df["Country"].unique())
     city = st.sidebar.selectbox("City", df["City"].unique())
     state = st.sidebar.selectbox("State", df["State"].unique())
-    postal_code = st.sidebar.selectbox("Postal Code", df["Postal Code"].unique())
     region = st.sidebar.selectbox("Region", df["Region"].unique())
     category = st.sidebar.selectbox("Category", df["Category"].unique())
     sub_category = st.sidebar.selectbox("Sub-Category", df["Sub-Category"].unique())
@@ -87,8 +85,43 @@ if flag == 0:
 
 
 if st.button("Predict"):
-    ...
-    # call api
+    data_to_predict = {
+        "Order Date": str(order_Date),
+        "Ship Date": str(ship_date),
+        "Ship Mode": ship_mode,
+        "Category": category,
+        "Sub-Category": sub_category,
+        "Product Name": product_name,
+        "Quantity": quantity,
+        "Profit": profit
+    }
+
+    # Convert the data to a JSON string
+    json_data = json.dumps([data_to_predict])
+
+    # Make the API request using requests library
+    api_url = 'https://api.akkio.com/api'
+    flow_key = 'oyw8MjvKbbub0nNTl7pP/1'
+    api_key = '08bac0c7-438e-498a-a586-29931a105e95'
+
+    payload = {
+        'flow_key': flow_key,
+        'api_key': api_key,
+        'data': json_data
+    }
+
+    response = requests.get(api_url, params=payload)
+
+    # Check if the API request was successful
+    if response.status_code == 200:
+        st.write("Prediction results:")
+        prediction_results = response.json()
+        sales_value = prediction_results[0]["Sales"]
+        st.write("Sales Prediced: ", sales_value)
+    else:
+        st.write("Error making API request:", response.status_code, response.text)
+    
+
     
 st.title("Analysis")
 
