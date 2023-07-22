@@ -21,10 +21,13 @@ const CameraScreen = () => {
 
         // Send the image URI to the Flask API for processing
         const formData = new FormData();
+        const imageUriParts = uri.split('.');
+        const imageType = imageUriParts[imageUriParts.length - 1];
+
         formData.append('image', {
           uri,
-          type: 'image/jpeg', // Change this to the appropriate image type if needed
-          name: 'image.jpg',
+          type: `image/${imageType}`, // Use the correct image type based on the image extension
+          name: `image.${imageType}`,
         });
 
         fetch('http://192.160.161.157:5000/compute', {
@@ -34,9 +37,8 @@ const CameraScreen = () => {
           .then((response) => response.json())
           .then((data) => {
             // Handle the response received from the server
-            if (data.message) {
-              Alert.alert('Computation Result', data.message);
-              console.log(data.message);
+            if (data.emotion) {
+              Alert.alert('Emotion Detected', `The detected emotion is: ${data.emotion}`);
             } else {
               Alert.alert('Error', 'Error occurred during computation.');
             }

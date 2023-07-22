@@ -36,7 +36,7 @@ def compute():
         if 'image' not in request.files:
             return jsonify({'message': 'No image provided'}), 400
         image = request.files['image']
-
+        
         # Log to check if the image is correctly received
         print('Image received:', image)
 
@@ -81,16 +81,15 @@ def compute():
                 # Return a default value with the expected input shape of the Keras model
                 return np.zeros((224, 224, 3), dtype=np.float32)
 
-
         def predict_emotion(preprocessed_image):
             # Reshape the image to match the input shape of the emotion model
             input_image = np.expand_dims(preprocessed_image, axis=0)
-            
+
             # Get the predicted emotion probabilities
             predictions = emotion_model.predict(input_image)[0]
             # Get the index of the maximum probability as the predicted class
             predicted_class_index = np.argmax(predictions)
-            
+            # print('Predicted class index:', predicted_class_index)
             predicted_emotion = emotion_mapping[predicted_class_index]
             return predicted_emotion
 
@@ -101,8 +100,8 @@ def compute():
 
         emotion = identify_emotion(image.read())
         print('Emotion:', emotion)
-        # For demonstration purposes, we'll just return a success message
-        result = {'message': 'Image received and computation complete'}
+        # Return the emotion as part of the response
+        result = {'emotion': emotion}
         return jsonify(result), 200
 
     except Exception as e:
