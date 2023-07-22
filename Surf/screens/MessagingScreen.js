@@ -12,10 +12,36 @@ const MessagingScreen = () => {
         text: newMessage,
         sender: 'Me',
       };
-
+  
       setMessages([...messages, message]);
       setNewMessage('');
-
+  
+      try {
+        // Send the new message to the Flask API
+        const response = await fetch('http://192.160.161.157:5000/query', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ query: newMessage }),
+        });
+  
+        // Parse the API response
+        const data = await response.json();
+  
+        // Create the response message from the Flask API
+        const responseMessage = {
+          id: new Date().getTime().toString(),
+          text: data.output, // Assuming the Flask API returns the 'output' key in the response JSON
+          sender: 'Bot', // Assuming the Flask API responds with the bot's message
+        };
+  
+        // Update the messages array with the response message
+        // But keep the user's original message (do not overwrite it)
+        setMessages((prevMessages) => [...prevMessages, responseMessage]);
+      } catch (error) {
+        console.error('Error sending message:', error);
+      }
     }
   };
 
